@@ -40,4 +40,7 @@ def get_supported_models(models='__all__'):
         return GPT_SUPPORTED_MODELS
     elif models == 'gemini':
         return GEMINI_SUPPORTED_MODELS
-    return GPT_SUPPORTED_MODELS + GEMINI_SUPPORTED_MODELS
+    elif models == '__all__':
+        return GPT_SUPPORTED_MODELS + GEMINI_SUPPORTED_MODELS
+    else:
+        raise ValueError(f"Invalid option '{models}'")
