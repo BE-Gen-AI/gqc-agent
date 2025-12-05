@@ -1,0 +1,83 @@
+from gqc_agent.core.system_prompts.loader import load_system_prompt
+from gqc_agent.core._llm_models.gpt_client import call_gpt
+from gqc_agent.core._llm_models.gemini_client import call_gemini
+from dotenv import load_dotenv
+import os
+import json
+
+load_dotenv()
+
+def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_file="query_rephraser.md"):
+    """
+    Rephrase a user query in context of previous queries.
+
+    Args:
+        user_input (dict): Structured input with 'current' and 'previous' queries.
+        model (str): LLM model to use (GPT or Gemini).
+        api_key (str): API key for LLM.
+        system_prompt_file (str): Filename of the system prompt.
+
+    Returns:
+        dict: JSON with {"rephrased_queries": ["Option 1", "Option 2"]}.
+    """
+    # Load system prompt
+    system_prompt = load_system_prompt(system_prompt_file)
+
+    # Prepare context
+    previous_queries = "\n".join([p["query"] for p in user_input.get("previous", [])])
+    current_query = user_input["current"]["query"]
+
+    # Create LLM prompt
+    user_prompt = f"""
+You are a query rephraser assistant. Rephrase the following user query into 2 alternative queries.
+Use previous queries as context. If previous queries are related to the current query,
+make the rephrased queries contextually relevant.
+
+Previous Queries:
+{previous_queries}
+
+Current Query:
+{current_query}
+
+Return only JSON in this exact format:
+{{ "rephrased_queries": [
+  "Option 1",
+  "Option 2"
+] }}
+"""
+
+    # Call correct LLM
+    if model.lower().startswith("gpt"):
+        response = call_gpt(api_key, model, system_prompt, user_prompt)
+    else:
+        response = call_gemini(api_key, model, system_prompt, user_prompt)
+
+    # LLM client should already return dict
+    return response
+
+
+# --------------------------
+# Example test
+# --------------------------
+if __name__ == "__main__":
+    test_input = {
+        "current": {
+            "role": "user",
+            "query": "description should be xyz for the department",
+            "timestamp": "2025-01-01 12:30:45"
+        },
+        "previous": [
+            {"role": "user", "query": "i want to add department with the name ABC", "timestamp": "2025-01-01 12:00:00"},
+            {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"}
+        ]
+    }
+
+    # Replace with your GPT or Gemini model and API key
+    model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
+    api_key = os.getenv("OPENAI_API_KEY")
+    # api_key = os.getenv("GEMINI_API_KEY")  # Use Gemini key if testing Gemini
+    if not api_key:
+        raise ValueError("API key missing. Set OPENAI_API_KEY or GEMINI_API_KEY in .env.")
+
+    result = rephrase_query(test_input, model=model_name, api_key=api_key)
+    print("Output:", result)
