@@ -1,6 +1,6 @@
 from gqc_agent.core._validations.model_validator import validate_model
 from gqc_agent.core.system_prompts.loader import load_system_prompt
-from gqc_agent.core._validations.get_supported_models import get_supported_models
+# from gqc_agent.core._validations.get_supported_models import get_supported_models
 from gqc_agent.core._llm_models.gpt_models import (
     gpt_generate,
     GPT_SUPPORTED_MODELS
@@ -64,7 +64,7 @@ class Client:
             ValueError: If an invalid model type is specified (with a suggestion if
                         close match exists).
         """
-        return get_supported_models(models)
+        # return get_supported_models(models)
 
     def run(self, prompt: str):
         """
