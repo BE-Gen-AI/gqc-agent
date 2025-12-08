@@ -52,35 +52,35 @@ Return only JSON in this exact format:
     else:
         response = call_gemini(api_key, model, system_prompt, prompt)
 
-    return response
+    return json.loads(response)
 
 
 
 # --------------------------
 # Example test
 # --------------------------
-if __name__ == "__main__":
-    test_input = {
-        "input": "Tell me more about it",
-        "current": {
-            "role": "user",
-            "query": "Tell me more about it",
-            "timestamp": "2025-01-01 12:30:45"
-        },
-        "history": [
-            {"role": "user", "query": "What is PHP?", "timestamp": "2025-01-01 12:00:00"},
-            {"role": "assistant", "response": "PHP is a server-side scripting language used for web development.", "timestamp": "2025-01-01 12:01:10"},
-            {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"},
-            {"role": "assistant", "response": "Yes, PHP is still widely used, especially for WordPress and backend APIs.", "timestamp": "2025-01-01 12:03:22"}
-        ]
-    }
+# if __name__ == "__main__":
+#     test_input = {
+#         "input": "Tell me more about it",
+#         "current": {
+#             "role": "user",
+#             "query": "Tell me more about it",
+#             "timestamp": "2025-01-01 12:30:45"
+#         },
+#         "history": [
+#             {"role": "user", "query": "What is PHP?", "timestamp": "2025-01-01 12:00:00"},
+#             {"role": "assistant", "response": "PHP is a server-side scripting language used for web development.", "timestamp": "2025-01-01 12:01:10"},
+#             {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"},
+#             {"role": "assistant", "response": "Yes, PHP is still widely used, especially for WordPress and backend APIs.", "timestamp": "2025-01-01 12:03:22"}
+#         ]
+#     }
 
-    # Replace with your GPT or Gemini model and API key
-    model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
-    api_key = os.getenv("OPENAI_API_KEY")
-    # api_key = os.getenv("GEMINI_API_KEY")  # Use Gemini key if testing Gemini
-    if not api_key:
-        raise ValueError("API key missing. Set OPENAI_API_KEY or GEMINI_API_KEY in .env.")
+#     # Replace with your GPT or Gemini model and API key
+#     model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
+#     api_key = os.getenv("OPENAI_API_KEY")
+#     # api_key = os.getenv("GEMINI_API_KEY")  # Use Gemini key if testing Gemini
+#     if not api_key:
+#         raise ValueError("API key missing. Set OPENAI_API_KEY or GEMINI_API_KEY in .env.")
 
-    result = create_note(test_input, model=model_name, api_key=api_key)
-    print("Output:", result)
+#     result = create_note(test_input, model=model_name, api_key=api_key)
+#     print("Output:", result)

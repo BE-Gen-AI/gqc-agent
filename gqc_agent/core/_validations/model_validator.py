@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     # Slightly incorrect Gemini input
     try:
-        validate_model("gemini-2.5-flashs")
+        validate_model("gemini-2.5-flash")
     except ValueError as e:
         print(e)
 
