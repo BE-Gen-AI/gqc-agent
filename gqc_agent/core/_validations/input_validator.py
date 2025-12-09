@@ -82,17 +82,17 @@ def validate_input(user_input: dict):
 # -----------------------------
 # Quick test of the validator
 # -----------------------------
-if __name__ == "__main__":
-    test_input = {
-        "input": "Tell me more about it",
-        "current": {"role": "user", "query": "Tell me more about it", "timestamp": "2025-01-01 12:30:45"},
-        "history": [
-            {"role": "user", "query": "What is PHP?", "timestamp": "2025-01-01 12:00:00"},
-            {"role": "assistant", "response": "PHP is a language", "timestamp": "2025-01-01 12:01:10"}
-        ]
-    }
+# if __name__ == "__main__":
+#     test_input = {
+#         "input": "Tell me more about it",
+#         "current": {"role": "user", "query": "Tell me more about it", "timestamp": "2025-01-01 12:30:45"},
+#         "history": [
+#             {"role": "user", "query": "What is PHP?", "timestamp": "2025-01-01 12:00:00"},
+#             {"role": "assistant", "response": "PHP is a language", "timestamp": "2025-01-01 12:01:10"}
+#         ]
+#     }
     
-    # Run the validator
-    validate_input(test_input)
-    print("Input is valid ✅")
+#     # Run the validator
+#     validate_input(test_input)
+#     print("Input is valid ✅")
     
