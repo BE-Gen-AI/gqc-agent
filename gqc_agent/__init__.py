@@ -1,3 +1,3 @@
-# from gqc_agent.core.client import Client
+from gqc_agent.core.client import AgentPipeline
 
-# __all__ = ["Client"]
+__all__ = ["AgentPipeline"]

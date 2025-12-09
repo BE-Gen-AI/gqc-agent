@@ -7,60 +7,56 @@ from dotenv import load_dotenv
 # Load API keys from .env
 load_dotenv()
 
-def validate_model(model: str):
+def validate_model(model: str, api_key: str = None):
     """
-    Validate that a given model is supported by either GPT or Gemini.
+    Validate that a given model is supported by the provider corresponding to the API key.
 
-    If the model is invalid, it provides a suggestion of the closest valid model(s)
-    in the relevant category (GPT or Gemini) or all models if unknown type.
+    Only checks GPT if GPT key is provided, or Gemini if Gemini key is provided.
+    Suggests closest matches if the model is invalid.
 
     Args:
         model (str): The model name to validate.
+        api_key (str): The API key provided by the user.
 
     Raises:
-        ValueError: If the model is not in GPT or Gemini supported models.
+        ValueError: If the model is invalid or no valid API key is provided.
     """
-    gpt_api_key = os.getenv("OPENAI_API_KEY")
-    gemini_api_key = os.getenv("GEMINI_API_KEY")
 
-    # Fetch models dynamically
-    gpt_models = list_gpt_models(api_key=gpt_api_key)
-    gemini_models = list_gemini_models(api_key=gemini_api_key)
+    if api_key == os.getenv("OPENAI_API_KEY"):
+        # User selected GPT
+        gpt_models = list_gpt_models(api_key)
+        if model not in gpt_models:
+            suggestion = get_close_matches(model, gpt_models, n=3, cutoff=0.4)
+            suggestion_msg = f" Did you mean: {suggestion}?" if suggestion else ""
+            raise ValueError(f"Invalid GPT model '{model}'. Supported models: {gpt_models}{suggestion_msg}")
+        print(f"Model '{model}' is valid for GPT client")
 
-    all_supported = gpt_models + gemini_models
+    elif api_key == os.getenv("GEMINI_API_KEY"):
+        # User selected Gemini
+        gemini_models = list_gemini_models(api_key)
+        if model not in gemini_models:
+            suggestion = get_close_matches(model, gemini_models, n=3, cutoff=0.4)
+            suggestion_msg = f" Did you mean: {suggestion}?" if suggestion else ""
+            raise ValueError(f"Invalid Gemini model '{model}'. Supported models: {gemini_models}{suggestion_msg}")
+        print(f"Model '{model}' is valid for Gemini client")
 
-    if model not in all_supported:
-        # Determine which category to check
-        if "gpt" in model.lower():
-            category_models = gpt_models
-        elif "gemini" in model.lower():
-            category_models = gemini_models
-        else:
-            category_models = all_supported
-
-        # Find closest matches
-        suggestion = get_close_matches(model, category_models, n=3, cutoff=0.4)
-        suggestion_msg = f" Did you mean: {suggestion}?" if suggestion else ""
-        raise ValueError(
-            f"Invalid model '{model}'. Supported models in this category: {category_models}{suggestion_msg}"
-        )
-
-    print(f"Model '{model}' is valid ✅")
+    else:
+        raise ValueError("No valid API key provided or unknown model provider")
 
 
 # Example usage
 if __name__ == "__main__":
     # Slightly incorrect GPT input
     try:
-        validate_model("gpt4-mini")
+        validate_model("gpt4-mini", api_key=os.getenv("OPENAI_API_KEY"))
     except ValueError as e:
         print(e)
 
     # Slightly incorrect Gemini input
     try:
-        validate_model("gemini-2.5-flash")
+        validate_model("gemini-2.5-flash", api_key=os.getenv("GEMINI_API_KEY"))
     except ValueError as e:
         print(e)
 
     # Correct model
-    validate_model("gpt-4.1-mini")
+    validate_model("gpt-4.1-mini",  api_key=os.getenv("OPENAI_API_KEY"))

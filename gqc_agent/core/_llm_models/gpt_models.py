@@ -35,6 +35,6 @@ def list_gpt_models(api_key: str = None):
         raise Exception(f"Failed to fetch GPT models: {e}")
 
 # Example usage
-if __name__ == "__main__":
-    gpt_models = list_gpt_models()
-    print("Available GPT models:", gpt_models)
+# if __name__ == "__main__":
+#     gpt_models = list_gpt_models()
+#     print("Available GPT models:", gpt_models)

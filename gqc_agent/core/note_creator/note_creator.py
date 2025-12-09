@@ -1,4 +1,6 @@
 from gqc_agent.core.system_prompts.loader import load_system_prompt
+from gqc_agent.core._llm_models.gpt_models import list_gpt_models
+from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 from gqc_agent.core._llm_models.gpt_client import call_gpt
 from gqc_agent.core._llm_models.gemini_client import call_gemini
 from dotenv import load_dotenv
@@ -33,24 +35,34 @@ def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="
     current_query = input_data["current"]["query"]
     user_input_text = input_data.get("input", current_query)
 
-    prompt = f"""
-You are a note creation assistant. Read the conversation below and summarize the user's intent and context into a single descriptive note.
+    user_prompt = f"""
+    Conversation History:
+    {history_text}
 
-Conversation History:
-{history_text}
+    Current User Input:
+    {current_query}
+    """
 
-Current User Input:
-{user_input_text}
 
-Return only JSON in this exact format:
-{{"notes": "<your generated note here>"}}
-"""
+    # -----------------------------
+    # Auto route based on API key
+    # -----------------------------
+    if api_key == os.getenv("OPENAI_API_KEY"):
+        # User selected GPT
+        gpt_models = list_gpt_models(api_key)
+        if model not in gpt_models:
+            raise ValueError(f"Invalid GPT model '{model}'")
+        response = call_gpt(api_key, model, system_prompt, user_prompt)
 
-    # Route to correct LLM client
-    if model.lower().startswith("gpt"):
-        response = call_gpt(api_key, model, system_prompt, prompt)
+    elif api_key == os.getenv("GEMINI_API_KEY"):
+        # User selected Gemini
+        gemini_models = list_gemini_models(api_key)
+        if model not in gemini_models:
+            raise ValueError(f"Invalid Gemini model '{model}'")
+        response = call_gemini(api_key, model, system_prompt, user_prompt)
+
     else:
-        response = call_gemini(api_key, model, system_prompt, prompt)
+        raise ValueError("No valid API key provided or unknown model provider")
 
     return json.loads(response)
 
@@ -76,11 +88,11 @@ Return only JSON in this exact format:
 #     }
 
 #     # Replace with your GPT or Gemini model and API key
-#     model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
-#     api_key = os.getenv("OPENAI_API_KEY")
+    # model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
+    # api_key = os.getenv("OPENAI_API_KEY")
 #     # api_key = os.getenv("GEMINI_API_KEY")  # Use Gemini key if testing Gemini
 #     if not api_key:
 #         raise ValueError("API key missing. Set OPENAI_API_KEY or GEMINI_API_KEY in .env.")
 
-#     result = create_note(test_input, model=model_name, api_key=api_key)
-#     print("Output:", result)
+    # result = create_note(test_input, model=model_name, api_key=api_key)
+    # print("Output:", result)

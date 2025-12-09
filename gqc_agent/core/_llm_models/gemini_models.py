@@ -34,7 +34,7 @@ def list_gemini_models(api_key: str = None):
     except Exception as e:
         raise Exception(f"Failed to fetch Gemini models: {e}")
 
-# Example usage
-if __name__ == "__main__":
-    gemini_models = list_gemini_models()
-    print("Available Gemini models:", gemini_models)
+# # Example usage
+# if __name__ == "__main__":
+#     gemini_models = list_gemini_models()
+#     print("Available Gemini models:", gemini_models)
