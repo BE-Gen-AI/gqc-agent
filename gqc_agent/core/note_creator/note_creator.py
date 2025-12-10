@@ -22,7 +22,11 @@ def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="
     Returns:
         dict: JSON with {"notes": "<generated note>"}.
     """
-    system_prompt = load_system_prompt(system_prompt_file)
+    try:
+        system_prompt = load_system_prompt(system_prompt_file)
+    except Exception as e:
+        print(f"Error loading system prompt '{system_prompt_file}': {e}")
+        return {"notes:": None}
 
     # Combine conversation history into context
     history_text = ""
@@ -33,7 +37,7 @@ def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="
             history_text += f"Assistant: {item['response']}\n"
 
     current_query = input_data["current"]["query"]
-    user_input_text = input_data.get("input", current_query)
+    # user_input_text = input_data.get("input", current_query)
 
     user_prompt = f"""
     Conversation History:

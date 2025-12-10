@@ -15,53 +15,123 @@ load_dotenv()
 
 
 class AgentPipeline:
+    """
+    Orchestrator class for running multiple agents (Intent Classifier, Query Rephraser, Note Creator)
+    using a specified LLM model (GPT or Gemini) and API key.
+
+    Attributes:
+        api_key (str): API key for the selected LLM provider.
+        model (str): Name of the model to use.
+    """
     def __init__(self, api_key: str, model: str):
+        """
+        Initialize the AgentPipeline with API key and model name.
+
+        Args:
+            api_key (str): OpenAI or Gemini API key.
+            model (str): Model name to be used with the API key.
+        """
         self.api_key = api_key
         self.model = model
 
     @classmethod
     def get_supported_models(cls, api_key: str):
         """
-        Get supported models based on the provided API key.
+        Fetch the list of supported models for the given API key.
 
         Args:
-            api_key (str): The API key for the model provider.
+            api_key (str): The API key for GPT or Gemini.
 
         Returns:
-            list: List of supported model names.
+            list: Supported model names. Returns empty list if error occurs.
         """
-
-        if api_key == os.getenv("OPENAI_API_KEY"):
-            return list_gpt_models(api_key)
-        elif api_key == os.getenv("GEMINI_API_KEY"):
-            return list_gemini_models(api_key)
-        else:
-            raise ValueError("No valid API key provided or unknown model provider")
+        try:
+            if api_key == os.getenv("OPENAI_API_KEY"):
+                return list_gpt_models(api_key)
+            elif api_key == os.getenv("GEMINI_API_KEY"):
+                return list_gemini_models(api_key)
+            else:
+                raise ValueError("No valid API key provided or unknown model provider")
+        except Exception as e:
+            print(f"Error fetching supported models: {e}")
+            return []
         
     @classmethod
     def show_system_prompt(cls, filename="default_prompt.md"):
         """
-        Display the content of a system prompt file to the user.
+        Load and return the content of a system prompt file.
 
         Args:
-            filename (str): Name of the system prompt file in /system_prompts
-            Sample filename : "intent_classifier.md", "note_creator.md", query_rephraser.md", etc.
+            filename (str): Name of the system prompt file in /system_prompts.
+                            Examples: "intent_classifier.md", "note_creator.md", "query_rephraser.md".
+
         Returns:
-            str: The content of the system prompt
+            str: File content. Returns empty string if file not found or error occurs.
         """
-        content = load_system_prompt(filename)
-        return content
+        try:
+            content = load_system_prompt(filename)
+            return content
+        except FileNotFoundError:
+            print(f"System prompt file '{filename}' not found.")
+            return ""
+        except Exception as e:
+            print(f"Error loading system prompt: {e}")
+            return ""
 
     def run_gqc(self, user_input: dict):
+        """
+        Run all agents in parallel threads and return combined results.
+
+        Steps:
+            1. Validate main user input.
+            2. Validate model selection.
+            3. Prepare inputs for agents:
+                - Intent Classifier & Query Rephraser get only current + history of user messages.
+                - Note Creator gets full user input.
+            4. Execute agents in parallel threads:
+                - classify_intent
+                - rephrase_query
+                - create_note
+            5. Merge agent results into a single dictionary.
+
+        Args:
+            user_input (dict): Structured user input including:
+                {
+                    "input": str,
+                    "current": {"role": "user", "query": str, "timestamp": str},
+                    "history": [{"role": "user"/"assistant", "query"/"response": str, "timestamp": str}, ...]
+                }
+
+        Returns:
+            dict: Combined output from all agents:
+                {
+                    "intent": str | None,
+                    "rephrased_queries": list | None,
+                    "notes": str | None
+                }
+                Each field is None if the corresponding agent failed.
+        """
         # -----------------------------
         # Step 1: Validate main input
         # -----------------------------
-        validate_input(user_input)
+        try:
+            validate_input(user_input)
+        except ValueError as ve:
+            print(f"Input validation failed: {ve}")
+            return {"error": "Invalid input format"}
 
         # -----------------------------
         # Step 2: Validate model
         # -----------------------------
-        validate_model(self.model, self.api_key)
+        try:
+            validate_model(self.model, self.api_key)
+            
+        except ValueError as ve:
+            print(f"Model validation failed: {ve}")
+            return {"error": "Invalid model selection"}
+        except Exception as e:
+            print(f"Unexpected error during model validation: {e}")
+            return {"error": "Internal error validating model"}
 
         # -----------------------------
         # Step 3: Prepare agent inputs
@@ -88,14 +158,25 @@ class AgentPipeline:
         # Step 5: Define threads
         # -----------------------------
         def run_intent():
-            results["intent_classifier"] = classify_intent(agent_input, self.model, self.api_key)
-
+            try:
+                results["intent_classifier"] = classify_intent(agent_input, self.model, self.api_key)
+            except Exception as e:
+                print(f"Intent classification error: {e}")
+                results["intent_classifier"] = {"intent": None}
+            
         def run_rephrase():
-            results["query_rephraser"] = rephrase_query(agent_input, self.model, self.api_key)
-
+            try:
+                results["query_rephraser"] = rephrase_query(agent_input, self.model, self.api_key)
+            except Exception as e:
+                print(f"Query rephrasing error: {e}")
+                results["query_rephraser"] = {"rephrased_queries": None}
+                
         def run_note():
-            results["note_creator"] = create_note(note_creator_input, self.model, self.api_key)
-
+            try:
+                results["note_creator"] = create_note(note_creator_input, self.model, self.api_key)
+            except Exception as e:
+                print(f"Note creation error: {e}")
+                results["note_creator"] = {"notes": None}
 
         # -----------------------------
         # Step 6: Create threads objects
@@ -122,11 +203,19 @@ class AgentPipeline:
         # -----------------------------
         # Step 8: Merge results
         # -----------------------------
-        final_output = {
-            "intent": results["intent_classifier"].get("intent") if results["intent_classifier"] else None,
-            "rephrased_queries": results["query_rephraser"].get("rephrased_queries") if results["query_rephraser"] else None,
-            "notes": results["note_creator"].get("notes") if results["note_creator"] else None
-        }
+        try:
+            final_output = {
+                "intent": results["intent_classifier"].get("intent") if results["intent_classifier"] else None,
+                "rephrased_queries": results["query_rephraser"].get("rephrased_queries") if results["query_rephraser"] else None,
+                "notes": results["note_creator"].get("notes") if results["note_creator"] else None
+            }
+        except Exception as e:
+            print(f"Error merging results: {e}")
+            final_output = {
+                "intent": None,
+                "rephrased_queries": None,
+                "notes": None
+            }
 
 
         return final_output

@@ -23,7 +23,12 @@ def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_fil
         dict: JSON with {"rephrased_queries": ["Option 1", "Option 2"]}.
     """
     # Load system prompt
-    system_prompt = load_system_prompt(system_prompt_file)
+    try:
+        system_prompt = load_system_prompt(system_prompt_file)
+    except Exception as e:
+        print(f"Error loading system prompt '{system_prompt_file}': {e}")
+        return {"rephrased_queries": None}
+        
 
     # Prepare context
     history_queries = "\n".join([h["query"] for h in user_input.get("history", []) if h.get("role") == "user"])

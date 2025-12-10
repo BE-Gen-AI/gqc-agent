@@ -32,7 +32,8 @@ def list_gemini_models(api_key: str = None):
         models = client.models.list()  # replace with actual method if different
         return [model.name for model in models]
     except Exception as e:
-        raise Exception(f"Failed to fetch Gemini models: {e}")
+        print(f"Failed to fetch Gemini models: {e}")
+        return []
 
 # # Example usage
 # if __name__ == "__main__":

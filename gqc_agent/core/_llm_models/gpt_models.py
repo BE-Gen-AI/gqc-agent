@@ -32,7 +32,8 @@ def list_gpt_models(api_key: str = None):
         models = client.models.list()
         return [model.id for model in models]
     except Exception as e:
-        raise Exception(f"Failed to fetch GPT models: {e}")
+        print(f"Failed to fetch GPT models: {e}")
+        return []
 
 # Example usage
 # if __name__ == "__main__":
