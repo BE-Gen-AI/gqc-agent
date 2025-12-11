@@ -50,16 +50,16 @@ def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_fil
     # -----------------------------
     if api_key == os.getenv("OPENAI_API_KEY"):
         # User selected GPT
-        gpt_models = list_gpt_models(api_key)
-        if model not in gpt_models:
-            raise ValueError(f"Invalid GPT model '{model}'")
+        # gpt_models = list_gpt_models(api_key)
+        # if model not in gpt_models:
+        #     raise ValueError(f"Invalid GPT model '{model}'")
         response = call_gpt(api_key, model, system_prompt, user_prompt)
 
     elif api_key == os.getenv("GEMINI_API_KEY"):
         # User selected Gemini
-        gemini_models = list_gemini_models(api_key)
-        if model not in gemini_models:
-            raise ValueError(f"Invalid Gemini model '{model}'")
+        # gemini_models = list_gemini_models(api_key)
+        # if model not in gemini_models:
+        #     raise ValueError(f"Invalid Gemini model '{model}'")
         response = call_gemini(api_key, model, system_prompt, user_prompt)
 
     else:
