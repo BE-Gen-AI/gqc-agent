@@ -22,7 +22,11 @@ def classify_intent(user_input: dict, model: str, api_key: str, system_prompt_fi
     Returns:
         dict: JSON with {"intent": "..."}.
     """
-    system_prompt = load_system_prompt(system_prompt_file)
+    try:
+        system_prompt = load_system_prompt(system_prompt_file)
+    except Exception as e:
+        print(f"Error loading system prompt '{system_prompt_file}': {e}")
+        return {"intent": None}
 
     current_query = user_input["current"]["query"]
     history_queries = "\n".join([h["query"] for h in user_input.get("history", []) if h.get("role") == "user"])
@@ -61,26 +65,26 @@ def classify_intent(user_input: dict, model: str, api_key: str, system_prompt_fi
 # --------------------------
 # Example test
 # --------------------------
-if __name__ == "__main__":
-    test_input = {
-        "current": {
-            "role": "user",
-            "query": "abc is am",
-            "timestamp": "2025-01-01 12:30:45"
-        },
-        "history": [
-            {"role": "user", "query": "i want to add department with the name ABC", "timestamp": "2025-01-01 12:00:00"},
-            {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"}
-        ]
-    }
+# if __name__ == "__main__":
+#     test_input = {
+#         "current": {
+#             "role": "user",
+#             "query": "abc is am",
+#             "timestamp": "2025-01-01 12:30:45"
+#         },
+#         "history": [
+#             {"role": "user", "query": "i want to add department with the name ABC", "timestamp": "2025-01-01 12:00:00"},
+#             {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"}
+#         ]
+#     }
 
 #     # Replace with your GPT or Gemini model and API key
-    model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
-    api_key = os.getenv("OPENAI_API_KEY")
+    # model_name = "gpt-4o-mini"  # or a Gemini model like "gemini-2.5-flash"
+    # api_key = os.getenv("OPENAI_API_KEY")
 #     # api_key = os.getenv("GEMINI_API_KEY")  # Use Gemini key if testing Gemini
 
     # if not api_key:
     #     raise ValueError("API key missing. Set OPENAI_API_KEY or GEMINI_API_KEY in .env.")
 
-    result = classify_intent(test_input, model=model_name, api_key=api_key)
-    print("Output:", result)
+    # result = classify_intent(test_input, model=model_name, api_key=api_key)
+    # print("Output:", result)

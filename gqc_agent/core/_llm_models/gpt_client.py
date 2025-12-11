@@ -1,5 +1,3 @@
-# gqc_agent/core/_llm_models/gpt_client.py
-
 from openai import OpenAI
 import json
 
