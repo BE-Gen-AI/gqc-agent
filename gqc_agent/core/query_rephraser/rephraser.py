@@ -25,6 +25,9 @@ def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_fil
     # Load system prompt
     try:
         system_prompt = load_system_prompt(system_prompt_file)
+    except FileNotFoundError:
+        print(f"System prompt file '{system_prompt_file}' not found.")
+        return {"rephrased_queries": None}
     except Exception as e:
         print(f"Error loading system prompt '{system_prompt_file}': {e}")
         return {"rephrased_queries": None}

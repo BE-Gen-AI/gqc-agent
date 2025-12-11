@@ -94,5 +94,5 @@ def validate_input(user_input: dict):
     
 #     # Run the validator
 #     validate_input(test_input)
-#     print("Input is valid ✅")
+#     print("Input is valid")
     

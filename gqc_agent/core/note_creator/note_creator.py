@@ -24,6 +24,9 @@ def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="
     """
     try:
         system_prompt = load_system_prompt(system_prompt_file)
+    except FileNotFoundError:
+        print(f"System prompt file '{system_prompt_file}' not found.")
+        return {"notes:": None}
     except Exception as e:
         print(f"Error loading system prompt '{system_prompt_file}': {e}")
         return {"notes:": None}

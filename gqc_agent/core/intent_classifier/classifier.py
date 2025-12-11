@@ -24,6 +24,9 @@ def classify_intent(user_input: dict, model: str, api_key: str, system_prompt_fi
     """
     try:
         system_prompt = load_system_prompt(system_prompt_file)
+    except FileNotFoundError:
+        print(f"System prompt file '{system_prompt_file}' not found.")
+        return {"intent": None}
     except Exception as e:
         print(f"Error loading system prompt '{system_prompt_file}': {e}")
         return {"intent": None}
@@ -69,7 +72,7 @@ def classify_intent(user_input: dict, model: str, api_key: str, system_prompt_fi
 #     test_input = {
 #         "current": {
 #             "role": "user",
-#             "query": "abc is am",
+#             "query": "i want to send an email to john",
 #             "timestamp": "2025-01-01 12:30:45"
 #         },
 #         "history": [
