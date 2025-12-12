@@ -28,7 +28,7 @@ GQC Agent is a lightweight agent orchestration library for LLM applications. It 
 
 ## Technologies
 Project is created with:
-* Python 3.10+
+* Python 3.13
 * OpenAI API
 * Google Gemini API
 
@@ -47,7 +47,7 @@ GEMINI_API_KEY=your_key
 ### Example: Using OPENAI Client
 
 ```python
-from gqc_agent.core.client import AgentPipeline
+from gqc_agent.core.orchestrator import AgentPipeline
 
 OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
 
@@ -70,7 +70,7 @@ print(response)
 ### Example: Using GEMINI Client
 
 ```python
-from gqc_agent.core.client import AgentPipeline
+from gqc_agent.core.orchestrator import AgentPipeline
 
 GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 
@@ -82,7 +82,7 @@ print(response)
 ### List Supported Models
 
 ```python
-from gqc_agent.core.client import AgentPipeline
+from gqc_agent.core.orchestrator import AgentPipeline
 
 print("GPT Models:", AgentPipeline.get_supported_models(api_key="YOUR_OPENAI_API_KEY"))
 print("Gemini Models:", AgentPipeline.get_supported_models(api_key="YOUR_GEMINI_API_KEY"))
@@ -91,7 +91,7 @@ print("Gemini Models:", AgentPipeline.get_supported_models(api_key="YOUR_GEMINI_
 ### Load System Prompt
 
 ```python
-from gqc_agent.core.client import AgentPipeline
+from gqc_agent.core.orchestrator import AgentPipeline
 
 prompt = AgentPipeline.show_system_prompt(filename="sample.md")
 print(prompt)
@@ -111,7 +111,7 @@ MIT License
 
 ## Author
 **BIG ENTITIES**  
-AI Department — Big Entities
+BE Developers
 
 ## Sources
 Inspired by modern AI agent frameworks and workflow orchestration systems.

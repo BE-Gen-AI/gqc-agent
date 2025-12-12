@@ -1,15 +1,16 @@
-from gqc_agent.core.system_prompts.loader import load_system_prompt
-from gqc_agent.core._llm_models.gpt_models import list_gpt_models
-from gqc_agent.core._llm_models.gemini_models import list_gemini_models
+from gqc_agent.core._system_prompts.loader import load_system_prompt
+# from gqc_agent.core._llm_models.gpt_models import list_gpt_models
+# from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 from gqc_agent.core._llm_models.gpt_client import call_gpt
 from gqc_agent.core._llm_models.gemini_client import call_gemini
 from dotenv import load_dotenv
 import os
 import json
+from gqc_agent.core._constants.constants import OPENAI_API_KEY, GEMINI_API_KEY, CURRENT, HISTORY, QUERY, ROLE, USER, QUERY_REPHRASOR_PROMPT
 
 load_dotenv()
 
-def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_file="query_rephraser.md"):
+def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_file=QUERY_REPHRASOR_PROMPT):
     """
     Rephrase a user query in context of history queries.
 
@@ -34,8 +35,8 @@ def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_fil
         
 
     # Prepare context
-    history_queries = "\n".join([h["query"] for h in user_input.get("history", []) if h.get("role") == "user"])
-    current_query = user_input["current"]["query"]
+    history_queries = "\n".join([h[QUERY] for h in user_input.get(HISTORY, []) if h.get(ROLE) == USER])
+    current_query = user_input[CURRENT][QUERY]
 
     # Create LLM prompt
     user_prompt = f"""
@@ -48,14 +49,14 @@ def rephrase_query(user_input: dict, model: str, api_key: str, system_prompt_fil
     # -----------------------------
     # Auto route based on API key
     # -----------------------------
-    if api_key == os.getenv("OPENAI_API_KEY"):
+    if api_key == os.getenv(OPENAI_API_KEY):
         # User selected GPT
         # gpt_models = list_gpt_models(api_key)
         # if model not in gpt_models:
         #     raise ValueError(f"Invalid GPT model '{model}'")
         response = call_gpt(api_key, model, system_prompt, user_prompt)
 
-    elif api_key == os.getenv("GEMINI_API_KEY"):
+    elif api_key == os.getenv(GEMINI_API_KEY):
         # User selected Gemini
         # gemini_models = list_gemini_models(api_key)
         # if model not in gemini_models:

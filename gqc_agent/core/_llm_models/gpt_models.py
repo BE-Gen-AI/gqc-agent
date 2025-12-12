@@ -1,6 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from gqc_agent.core._constants.constants import OPENAI_API_KEY
 
 # Load environment variables from .env file
 load_dotenv()
@@ -20,7 +21,7 @@ def list_gpt_models(api_key: str = None):
         ValueError: If API key is missing.
         Exception: If the API call fails.
     """
-    api_key = api_key or os.getenv("OPENAI_API_KEY")
+    api_key = api_key or os.getenv(OPENAI_API_KEY)
     if not api_key:
         raise ValueError("OpenAI API key is missing. Set OPENAI_API_KEY in .env or pass as argument.")
 
