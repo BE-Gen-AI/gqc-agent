@@ -1,15 +1,16 @@
-from gqc_agent.core.system_prompts.loader import load_system_prompt
-from gqc_agent.core._llm_models.gpt_models import list_gpt_models
-from gqc_agent.core._llm_models.gemini_models import list_gemini_models
+from gqc_agent.core._system_prompts.loader import load_system_prompt
+# from gqc_agent.core._llm_models.gpt_models import list_gpt_models
+# from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 from gqc_agent.core._llm_models.gpt_client import call_gpt
 from gqc_agent.core._llm_models.gemini_client import call_gemini
 from dotenv import load_dotenv
 import os
 import json
+from gqc_agent.core._constants.constants import OPENAI_API_KEY, GEMINI_API_KEY, CURRENT, HISTORY, ROLE, ASSISTANT, USER, QUERY, RESPONSE, NOTES_CREATOR_PROMPT
 
 load_dotenv()
 
-def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="note_creator.md"):
+def create_note(input_data: dict, model: str, api_key: str, system_prompt_file=NOTES_CREATOR_PROMPT):
     """
     Generate a contextual note based on current input and conversation history.
 
@@ -33,13 +34,13 @@ def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="
 
     # Combine conversation history into context
     history_text = ""
-    for item in input_data.get("history", []):
-        if item["role"] == "user":
-            history_text += f"User: {item['query']}\n"
-        elif item["role"] == "assistant":
-            history_text += f"Assistant: {item['response']}\n"
+    for item in input_data.get(HISTORY, []):
+        if item[ROLE] == USER:
+            history_text += f"User: {item[QUERY]}\n"
+        elif item[ROLE] == ASSISTANT:
+            history_text += f"Assistant: {item[RESPONSE]}\n"
 
-    current_query = input_data["current"]["query"]
+    current_query = input_data[CURRENT][QUERY]
     # user_input_text = input_data.get("input", current_query)
 
     user_prompt = f"""
@@ -54,14 +55,14 @@ def create_note(input_data: dict, model: str, api_key: str, system_prompt_file="
     # -----------------------------
     # Auto route based on API key
     # -----------------------------
-    if api_key == os.getenv("OPENAI_API_KEY"):
+    if api_key == os.getenv(OPENAI_API_KEY):
         # User selected GPT
         # gpt_models = list_gpt_models(api_key)
         # if model not in gpt_models:
         #     raise ValueError(f"Invalid GPT model '{model}'")
         response = call_gpt(api_key, model, system_prompt, user_prompt)
 
-    elif api_key == os.getenv("GEMINI_API_KEY"):
+    elif api_key == os.getenv(GEMINI_API_KEY):
         # User selected Gemini
         # gemini_models = list_gemini_models(api_key)
         # if model not in gemini_models:

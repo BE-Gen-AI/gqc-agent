@@ -6,10 +6,12 @@ from gqc_agent.core._llm_models.gpt_models import list_gpt_models
 from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 from gqc_agent.core._validations.input_validator import validate_input
 from gqc_agent.core._validations.model_validator import validate_model
-from gqc_agent.core.intent_classifier.classifier import classify_intent
-from gqc_agent.core.query_rephraser.rephraser import rephrase_query
-from gqc_agent.core.note_creator.note_creator import create_note
-from gqc_agent.core.system_prompts.loader import load_system_prompt
+from gqc_agent.core._intent_classifier.classifier import classify_intent
+from gqc_agent.core._query_rephraser.rephraser import rephrase_query
+from gqc_agent.core._note_creator.note_creator import create_note
+from gqc_agent.core._system_prompts.loader import load_system_prompt
+from gqc_agent.core._constants.constants import OPENAI_API_KEY, GEMINI_API_KEY, CURRENT, HISTORY, ROLE, USER, QUERY
+
 
 load_dotenv()
 
@@ -46,9 +48,9 @@ class AgentPipeline:
             list: Supported model names. Returns empty list if error occurs.
         """
         try:
-            if api_key == os.getenv("OPENAI_API_KEY"):
+            if api_key == os.getenv(OPENAI_API_KEY):
                 return list_gpt_models(api_key)
-            elif api_key == os.getenv("GEMINI_API_KEY"):
+            elif api_key == os.getenv(GEMINI_API_KEY):
                 return list_gemini_models(api_key)
             else:
                 raise ValueError("No valid API key provided or unknown model provider")
@@ -138,8 +140,8 @@ class AgentPipeline:
         # -----------------------------
         # Intent Classifier & Query Rephraser get only current + history
         agent_input = {
-            "current": user_input["current"],
-            "history": [h for h in user_input.get("history", []) if h["role"] == "user"]
+            CURRENT: user_input[CURRENT],
+            HISTORY: [h for h in user_input.get(HISTORY, []) if h[ROLE] == USER]
         }
 
         # Note Creator gets full input
@@ -224,23 +226,23 @@ class AgentPipeline:
 # -----------------------
 # Quick CLI test
 # -----------------------
-# if __name__ == "__main__":
-#     sample_input = {
-#         "input": "i want to add department with the name HR",
-#         "current": {"role": "user", "query": "i want to add department with the name HR", "timestamp": "2025-01-01 12:30:45"},
-#         "history": [
-#             {"role": "user", "query": "i want to add department with the name medical", "timestamp": "2025-01-01 12:00:00"},
-#             {"role": "assistant", "response": "department name is medical, but provide me the description, and active status to add department.", "timestamp": "2025-01-01 12:01:10"},
-#             {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"},
-#             {"role": "assistant", "response": "Yes, PHP is still widely used, especially for WordPress and backend APIs.", "timestamp": "2025-01-01 12:03:22"}
-#         ]
-#     }
+if __name__ == "__main__":
+    sample_input = {
+        "input": "i want to add department with the name HR",
+        "current": {"role": "user", "query": "i want to add department with the name HR", "timestamp": "2025-01-01 12:30:45"},
+        "history": [
+            {"role": "user", "query": "i want to add department with the name medical", "timestamp": "2025-01-01 12:00:00"},
+            {"role": "assistant", "response": "department name is medical, but provide me the description, and active status to add department.", "timestamp": "2025-01-01 12:01:10"},
+            {"role": "user", "query": "Is PHP still useful?", "timestamp": "2025-01-01 12:02:00"},
+            {"role": "assistant", "response": "Yes, PHP is still widely used, especially for WordPress and backend APIs.", "timestamp": "2025-01-01 12:03:22"}
+        ]
+    }
 
-#     openai_api_key = os.getenv("OPENAI_API_KEY")
-#     if not openai_api_key:
-#         raise ValueError("API key missing. Set OPENAI_API_KEY in .env.")
-#     model = "gpt-4o-mini"  
-#     orch = AgentPipeline(api_key=openai_api_key, model=model)
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    if not openai_api_key:
+        raise ValueError("API key missing. Set OPENAI_API_KEY in .env.")
+    model = "gpt-4o-mini"  
+    orch = AgentPipeline(api_key=openai_api_key, model=model)
     
     # gemini_api_key = os.getenv("GEMINI_API_KEY")
     # if not gemini_api_key:
@@ -248,5 +250,5 @@ class AgentPipeline:
     # model = "models/gemini-2.5-flash"
     # orch = AgentPipeline(api_key=gemini_api_key, model=model)
     
-    # output = orch.run_gqc(sample_input)
-    # print(json.dumps(output, indent=2))
+    output = orch.run_gqc(sample_input)
+    print(json.dumps(output, indent=2))
