@@ -26,8 +26,6 @@ GQC Agent is a lightweight, modular Python library designed to orchestrate multi
 ## Technologies
 Project is created with:
 * Python 3.13
-* OpenAI client
-* Google Gemini client
 
 ## Use Cases
 * AI chatbots with enhanced context handling
