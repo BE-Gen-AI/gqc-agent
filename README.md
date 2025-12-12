@@ -6,15 +6,15 @@ GQC Agent is a Python library that helps developers work with AI models using an
 * [Overview](#overview)
 * [Features](#features)
 * [Technologies](#technologies)
+* [Use Cases](#use-cases)
 * [Installation](#installation)
 * [Usage Examples](#usage-examples)
 * [Project Status](#project-status)
 * [License](#license)
 * [Author](#author)
-* [Sources](#sources)
 
 ## Overview
-GQC Agent is a lightweight agent orchestration library for LLM applications. It validates AI models, predicts user intent, rephrases queries, summarizes interactions, and organizes the agent workflow.
+GQC Agent is a lightweight, modular Python library designed to orchestrate multiple AI agents for large language model (LLM) applications. It simplifies the workflow of building intelligent conversational systems by providing robust tools for input validation, model management, intent prediction, query rephrasing, and interaction summarization.
 
 ## Features
 * GPT & Gemini model validator
@@ -22,15 +22,18 @@ GQC Agent is a lightweight agent orchestration library for LLM applications. It 
 * Query rephraser
 * Summarizer agent
 * Orchestrator for multi-agent flow
-* Exception handling
-* Standardized input structure
-* Easy .env configuration
 
 ## Technologies
 Project is created with:
 * Python 3.13
-* OpenAI API
-* Google Gemini API
+* OpenAI client
+* Google Gemini client
+
+## Use Cases
+* AI chatbots with enhanced context handling
+* Retrieval-Augmented Generation (RAG) for Q&A and summarization
+* Workflow automation using multiple AI agents
+* Note-taking and interaction summarization
 
 ## Installation
 
@@ -111,7 +114,4 @@ MIT License
 
 ## Author
 **BIG ENTITIES**  
-BE Developers
-
-## Sources
-Inspired by modern AI agent frameworks and workflow orchestration systems.
+BE AI Developers
