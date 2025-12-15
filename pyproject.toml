@@ -24,7 +24,7 @@ keywords = [
   "gemini-models",
   "intent-classification",
   "query-rephraser",
-  "notes-creator"
+  "notes-creator",
   "gqc-agent"
 ]
 
