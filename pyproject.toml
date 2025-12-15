@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gqc-agent"          # PyPI package name
-version = "1.0.1"
+version = "1.0.2"
 description = "GQC Agent provides a multi-agent AI pipeline for intent classification, query rephrasing, and note creation using GPT and Gemini models."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -16,20 +16,18 @@ authors = [
 ]
 
 keywords = [
-  "ai",
-  "llm",
+  "gqc-agent",
   "agentic-ai",
   "generative-ai",
   "openai-models",
   "gemini-models",
   "intent-classification",
   "query-rephraser",
-  "notes-creator",
-  "gqc-agent"
+  "notes-creator"
 ]
 
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
