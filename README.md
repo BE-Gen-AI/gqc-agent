@@ -107,6 +107,8 @@ print("Gemini Models:", AgentPipeline.get_supported_models(api_key="YOUR_GEMINI_
 
 ### Load System Prompt
 
+This example demonstrates how to load and display a predefined system prompt using AgentPipeline. It shows the instructions and expected output format that the agent uses to create structured notes from conversation history.
+
 ```python
 from gqc_agent.core.orchestrator import AgentPipeline
 
@@ -115,8 +117,6 @@ print(prompt)
 ```
 
 ### Response
-
-This example demonstrates how to load and display a predefined system prompt using AgentPipeline. It shows the instructions and expected output format that the agent uses to create structured notes from conversation history.
 
 ```bash
 Available system prompts: You are an advanced note creation assistant.
