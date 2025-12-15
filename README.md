@@ -82,7 +82,7 @@ This example demonstrates how to retrieve the list of all supported GPT and Gemi
 from gqc_agent.core.orchestrator import AgentPipeline
 
 print("GPT Models:", AgentPipeline.get_supported_models(api_key="YOUR_OPENAI_API_KEY"))
-print("Gemini Models:", AgentPipeline.get_supported_models(api_key="YOUR_GEMINI_API_KEY"))
+# print("Gemini Models:", AgentPipeline.get_supported_models(api_key="YOUR_GEMINI_API_KEY"))
 ```
 
 ### Response
@@ -112,7 +112,7 @@ This example demonstrates how to load and display a predefined system prompt usi
 ```python
 from gqc_agent.core.orchestrator import AgentPipeline
 
-prompt = AgentPipeline.show_system_prompt(filename="sample.md")
+prompt = AgentPipeline.show_system_prompt(filename="note_creator.md")
 print(prompt)
 ```
 
