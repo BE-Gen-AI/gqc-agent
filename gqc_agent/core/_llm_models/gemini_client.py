@@ -1,7 +1,6 @@
-from google import genai
 from google.genai import types
 import json
-def call_gemini(api_key: str, model: str, system_prompt: str, user_prompt: str) -> str:
+def call_gemini(client, model, system_prompt: str, user_prompt: str) -> str:
     """
     Generate a JSON response using a Gemini language model.
 
@@ -14,7 +13,6 @@ def call_gemini(api_key: str, model: str, system_prompt: str, user_prompt: str) 
     Returns:
         dict: JSON response from Gemini. If parsing fails, returns {"intent": "ambiguous"}.
     """
-    client = genai.Client(api_key=api_key)
 
     chat = client.chats.create(
         model=model,

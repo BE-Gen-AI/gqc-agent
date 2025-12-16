@@ -4,7 +4,7 @@ from gqc_agent.core._llm_models.gemini_client import call_gemini
 import json
 from gqc_agent.core._constants.constants import CURRENT, HISTORY, ROLE, ASSISTANT, USER, QUERY, RESPONSE, NOTES_CREATOR_PROMPT
 
-def create_note(input_data: dict, model: str, api_key: str, provider: str, system_prompt_file=NOTES_CREATOR_PROMPT):
+def create_note(input_data: dict, model: str, provider: str, client, system_prompt_file=NOTES_CREATOR_PROMPT):
     """
     Generate a contextual note based on current input and conversation history.
 
@@ -52,11 +52,11 @@ def create_note(input_data: dict, model: str, api_key: str, provider: str, syste
     # -----------------------------
     if provider.lower() == "gpt":
 
-        response = call_gpt(api_key, model, system_prompt, user_prompt)
+        response = call_gpt(client, model, system_prompt, user_prompt)
 
     elif provider.lower() == "gemini":
 
-        response = call_gemini(api_key, model, system_prompt, user_prompt)
+        response = call_gemini(client, model, system_prompt, user_prompt)
 
     else:
         raise ValueError("No valid API key provided or unknown model provider")

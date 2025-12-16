@@ -1,7 +1,6 @@
-from openai import OpenAI
 import json
 
-def call_gpt(api_key: str, model: str, system_prompt: str, user_prompt: str) -> str:
+def call_gpt(client, model, system_prompt: str, user_prompt: str) -> str:
     """
     Generate a JSON response using a GPT language model.
 
@@ -14,8 +13,6 @@ def call_gpt(api_key: str, model: str, system_prompt: str, user_prompt: str) -> 
     Returns:
         dict: JSON response from GPT. If parsing fails, returns {"intent": "ambiguous"}.
     """
-
-    client = OpenAI(api_key=api_key)
 
     response = client.chat.completions.create(
         model=model,

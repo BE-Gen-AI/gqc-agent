@@ -1,5 +1,7 @@
 import json
 import threading
+from google import genai
+from openai import OpenAI
 from gqc_agent.core._llm_models.gpt_models import list_gpt_models
 from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 from gqc_agent.core._validations.input_validator import validate_input
@@ -22,16 +24,25 @@ class AgentPipeline:
     """
     def __init__(self, api_key: str, model: str, provider: str):
         """
-        Initialize the AgentPipeline with API key and model name.
+        Initialize the AgentPipeline with LLM provider, model, and API key.
 
         Args:
             api_key (str): OpenAI or Gemini API key.
             model (str): Model name to be used with the API key.
             provider (str): LLM provider, must be either "gpt" or "gemini".
         """
-        self.api_key = api_key
+        
         self.model = model
         self.provider = provider
+        
+        # Initialize client once
+        if self.provider == "gpt":
+            self.client = OpenAI(api_key=api_key)
+        elif self.provider == "gemini":
+            self.client = genai.Client(api_key=api_key)
+        else:
+            raise ValueError("Provider must be either 'gpt' or 'gemini'")
+
 
     def get_supported_models(self):
         """
@@ -46,9 +57,9 @@ class AgentPipeline:
         """
         try:
             if self.provider.lower() == "gpt":
-                return list_gpt_models(self.api_key)
+                return list_gpt_models(self.client)
             elif self.provider.lower() == "gemini":
-                return list_gemini_models(self.api_key)
+                return list_gemini_models(self.client)
             else:
                 raise ValueError("Provider must be either 'gpt' or 'gemini'")
         except Exception as e:
@@ -123,8 +134,7 @@ class AgentPipeline:
         # Step 2: Validate model
         # -----------------------------
         try:
-            validate_model(self.model, self.api_key, self.provider)
-            
+            validate_model(self.model, self.client, self.provider)
         except ValueError as ve:
             print(f"Model validation failed: {ve}")
             return {"error": "Invalid model selection"}
@@ -158,21 +168,21 @@ class AgentPipeline:
         # -----------------------------
         def run_intent():
             try:
-                results["intent_classifier"] = classify_intent(agent_input, self.model, self.api_key, self.provider)
+                results["intent_classifier"] = classify_intent(agent_input, self.model, self.provider, self.client)
             except Exception as e:
                 print(f"Intent classification error: {e}")
                 results["intent_classifier"] = {"intent": None}
             
         def run_rephrase():
             try:
-                results["query_rephraser"] = rephrase_query(agent_input, self.model, self.api_key, self.provider)
+                results["query_rephraser"] = rephrase_query(agent_input, self.model, self.provider, self.client) 
             except Exception as e:
                 print(f"Query rephrasing error: {e}")
                 results["query_rephraser"] = {"rephrased_queries": None}
                 
         def run_note():
             try:
-                results["note_creator"] = create_note(note_creator_input, self.model, self.api_key, self.provider)
+                results["note_creator"] = create_note(note_creator_input, self.model, self.provider, self.client)
             except Exception as e:
                 print(f"Note creation error: {e}")
                 results["note_creator"] = {"notes": None}

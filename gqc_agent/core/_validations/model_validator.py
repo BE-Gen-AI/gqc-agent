@@ -2,7 +2,7 @@ from difflib import get_close_matches
 from gqc_agent.core._llm_models.gpt_models import list_gpt_models
 from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 
-def validate_model(model: str, api_key: str = None, provider: str = "gpt"):
+def validate_model(model: str, client, provider: str = "gpt"):
     """
     Validate that a given model is supported by the provider corresponding to the API key.
 
@@ -19,7 +19,7 @@ def validate_model(model: str, api_key: str = None, provider: str = "gpt"):
     try:
         if provider.lower() == "gpt":
             # User selected GPT
-            gpt_models = list_gpt_models(api_key)
+            gpt_models = list_gpt_models(client)
             if model not in gpt_models:
                 suggestion = get_close_matches(model, gpt_models, n=3, cutoff=0.4)
                 suggestion_msg = f" Did you mean: {suggestion}?" if suggestion else ""
@@ -28,7 +28,7 @@ def validate_model(model: str, api_key: str = None, provider: str = "gpt"):
 
         elif provider.lower() == "gemini":
             # User selected Gemini
-            gemini_models = list_gemini_models(api_key)
+            gemini_models = list_gemini_models(client)
             if model not in gemini_models:
                 suggestion = get_close_matches(model, gemini_models, n=3, cutoff=0.4)
                 suggestion_msg = f" Did you mean: {suggestion}?" if suggestion else ""

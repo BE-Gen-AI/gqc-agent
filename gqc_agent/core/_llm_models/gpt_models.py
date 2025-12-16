@@ -1,6 +1,4 @@
-from openai import OpenAI
-
-def list_gpt_models(api_key: str = None):
+def list_gpt_models(client):
     """
     List all available GPT models for the given API key.
 
@@ -16,11 +14,8 @@ def list_gpt_models(api_key: str = None):
         Exception: If the API call fails.
     """
 
-    if not api_key:
+    if not client:
         raise ValueError("OpenAI API key is missing. Set OPENAI_API_KEY in .env or pass as argument.")
-
-    # Initialize OpenAI client
-    client = OpenAI(api_key=api_key)
 
     # Fetch available models
     try:

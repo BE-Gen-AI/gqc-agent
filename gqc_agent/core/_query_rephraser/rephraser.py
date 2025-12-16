@@ -5,7 +5,7 @@ import json
 from gqc_agent.core._constants.constants import CURRENT, HISTORY, QUERY, ROLE, USER, QUERY_REPHRASOR_PROMPT
 
 
-def rephrase_query(user_input: dict, model: str, api_key: str, provider: str, system_prompt_file=QUERY_REPHRASOR_PROMPT):
+def rephrase_query(user_input: dict, model: str, provider: str, client, system_prompt_file=QUERY_REPHRASOR_PROMPT):
     """
     Rephrase a user query in context of history queries.
 
@@ -47,11 +47,11 @@ def rephrase_query(user_input: dict, model: str, api_key: str, provider: str, sy
     # -----------------------------
     if provider.lower() == "gpt":
 
-        response = call_gpt(api_key, model, system_prompt, user_prompt)
+        response = call_gpt(client, model, system_prompt, user_prompt)
 
     elif provider.lower() == "gemini":
 
-        response = call_gemini(api_key, model, system_prompt, user_prompt)
+        response = call_gemini(client, model, system_prompt, user_prompt)
 
     else:
         raise ValueError("No valid API key provided or unknown model provider")
