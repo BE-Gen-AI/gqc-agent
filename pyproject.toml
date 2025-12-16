@@ -17,13 +17,11 @@ authors = [
 
 keywords = [
   "gqc-agent",
-  "agentic-ai",
-  "generative-ai",
-  "openai-models",
-  "gemini-models",
   "intent-classification",
   "query-rephraser",
-  "notes-creator"
+  "notes-creator",
+  "openai-models",
+  "gemini-models"
 ]
 
 classifiers = [
@@ -42,7 +40,6 @@ dependencies = [
   "openai>=2.8.1",
   "google-genai>=1.52.0",
   "pydantic>=2.12.5",
-  "python-dotenv>=1.2.1",
   "requests>=2.32.5",
   "httpx>=0.28.1",
   "anyio>=4.12.0"

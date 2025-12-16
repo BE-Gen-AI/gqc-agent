@@ -1,12 +1,4 @@
-from google import genai
-import os
-from dotenv import load_dotenv
-from gqc_agent.core._constants.constants import GEMINI_API_KEY
-
-# Load environment variables from .env file
-load_dotenv()
-
-def list_gemini_models(api_key: str = None):
+def list_gemini_models(client):
     """
     List all available Gemini models for the given API key.
 
@@ -21,12 +13,9 @@ def list_gemini_models(api_key: str = None):
         ValueError: If API key is missing.
         Exception: If the API call fails.
     """
-    api_key = api_key or os.getenv(GEMINI_API_KEY)
-    if not api_key:
+    
+    if not client:
         raise ValueError("Gemini API key is missing. Set GEMINI_API_KEY in .env or pass as argument.")
-
-    # Initialize Gemini client
-    client = genai.Client(api_key=api_key)
     
     # Fetch available models
     try:

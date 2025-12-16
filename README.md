@@ -44,8 +44,8 @@ from gqc_agent.core.orchestrator import AgentPipeline
 OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
 # GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 
-# client = AgentPipeline(api_key=GEMINI_API_KEY, model="models/gemini-2.5-flash")
-client = AgentPipeline(api_key=OPENAI_API_KEY, model="gpt-4o-mini")
+# client = AgentPipeline(api_key=GEMINI_API_KEY, model="models/gemini-2.5-flash", provider="gemini")
+client = AgentPipeline(api_key=OPENAI_API_KEY, model="gpt-4o-mini", provider="gpt")
 response = client.run_gqc(
     user_input={
         "input": "Tell me more about both of them",
@@ -81,8 +81,15 @@ This example demonstrates how to retrieve the list of all supported GPT and Gemi
 ```python
 from gqc_agent.core.orchestrator import AgentPipeline
 
-print("GPT Models:", AgentPipeline.get_supported_models(api_key="YOUR_OPENAI_API_KEY"))
-# print("Gemini Models:", AgentPipeline.get_supported_models(api_key="YOUR_GEMINI_API_KEY"))
+OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
+# GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+
+# client = AgentPipeline(api_key=OPENAI_API_KEY, model="gpt-4o-mini", provider="gemini")
+client = AgentPipeline(api_key=OPENAI_API_KEY, model="gpt-4o-mini", provider="gpt")
+gpt_models = client.get_supported_models()
+# gemini_models = client.get_supported_models()
+print("GPT Models from AgentPipeline:", gpt_models)
+# print("GEMINI Models from AgentPipeline:", gemini_models)
 ```
 
 ### Response

@@ -1,7 +1,3 @@
-# --- ENV KEYS ---
-OPENAI_API_KEY = "OPENAI_API_KEY"
-GEMINI_API_KEY = "GEMINI_API_KEY"
-
 # --- INPUT FORMAT KEYS ---
 INPUT = "input"
 CURRENT = "current"
