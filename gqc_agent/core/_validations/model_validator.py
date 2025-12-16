@@ -11,7 +11,8 @@ def validate_model(model: str, client, provider: str = "gpt"):
 
     Args:
         model (str): The model name to validate.
-        api_key (str): The API key provided by the user.
+        client: Initialized GPT or Gemini client.
+        provider (str): LLM provider, either 'gpt' or 'gemini'. Default is 'gpt'.
 
     Raises:
         ValueError: If the model is invalid or no valid API key is provided.

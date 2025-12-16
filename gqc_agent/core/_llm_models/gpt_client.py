@@ -5,7 +5,7 @@ def call_gpt(client, model, system_prompt: str, user_prompt: str) -> str:
     Generate a JSON response using a GPT language model.
 
     Args:
-        api_key (str): API key for GPT 
+        client: Initialized GPT client object.
         model (str): GPT model name.
         system_prompt (str): System instructions.
         user_prompt (str): User query.

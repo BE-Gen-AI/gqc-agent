@@ -11,8 +11,8 @@ def create_note(input_data: dict, model: str, provider: str, client, system_prom
     Args:
         input_data (dict): Structured input with 'input', 'current', and 'history'.
         model (str): LLM model name (GPT or Gemini).
-        api_key (str): API key for the model.
-        provider (str): provider name (gpt or gemini).
+        client: Initialized LLM client (OpenAI or Gemini client object).
+        provider (str): LLM provider, either "gpt" or "gemini".
         system_prompt_file (str): System prompt filename guiding note creation.
 
     Returns:

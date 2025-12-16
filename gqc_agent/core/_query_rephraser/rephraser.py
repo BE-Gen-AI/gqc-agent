@@ -12,8 +12,8 @@ def rephrase_query(user_input: dict, model: str, provider: str, client, system_p
     Args:
         user_input (dict): Structured input with 'current' and 'history' queries.
         model (str): LLM model to use (GPT or Gemini).
-        api_key (str): API key for LLM.
-        provider (str): provider name (gpt or gemini).
+        client: Initialized LLM client (OpenAI or Gemini client object).
+        provider (str): LLM provider, either "gpt" or "gemini".
         system_prompt_file (str): Filename of the system prompt.
 
     Returns:
