@@ -1,14 +1,8 @@
-import os
 from difflib import get_close_matches
 from gqc_agent.core._llm_models.gpt_models import list_gpt_models
 from gqc_agent.core._llm_models.gemini_models import list_gemini_models
-from dotenv import load_dotenv
-from gqc_agent.core._constants.constants import OPENAI_API_KEY, GEMINI_API_KEY
 
-# Load API keys from .env
-load_dotenv()
-
-def validate_model(model: str, api_key: str = None):
+def validate_model(model: str, api_key: str = None, provider: str = "gpt"):
     """
     Validate that a given model is supported by the provider corresponding to the API key.
 
@@ -23,7 +17,7 @@ def validate_model(model: str, api_key: str = None):
         ValueError: If the model is invalid or no valid API key is provided.
     """
     try:
-        if api_key == os.getenv(OPENAI_API_KEY):
+        if provider.lower() == "gpt":
             # User selected GPT
             gpt_models = list_gpt_models(api_key)
             if model not in gpt_models:
@@ -32,7 +26,7 @@ def validate_model(model: str, api_key: str = None):
                 raise ValueError(f"Invalid GPT model '{model}'. Supported models: {gpt_models}{suggestion_msg}")
             print(f"Model '{model}' is valid for GPT client")
 
-        elif api_key == os.getenv(GEMINI_API_KEY):
+        elif provider.lower() == "gemini":
             # User selected Gemini
             gemini_models = list_gemini_models(api_key)
             if model not in gemini_models:

@@ -1,7 +1,5 @@
 import json
 import threading
-import os
-from dotenv import load_dotenv
 from gqc_agent.core._llm_models.gpt_models import list_gpt_models
 from gqc_agent.core._llm_models.gemini_models import list_gemini_models
 from gqc_agent.core._validations.input_validator import validate_input
@@ -10,10 +8,7 @@ from gqc_agent.core._intent_classifier.classifier import classify_intent
 from gqc_agent.core._query_rephraser.rephraser import rephrase_query
 from gqc_agent.core._note_creator.note_creator import create_note
 from gqc_agent.core._system_prompts.loader import load_system_prompt
-from gqc_agent.core._constants.constants import OPENAI_API_KEY, GEMINI_API_KEY, CURRENT, HISTORY, ROLE, USER, QUERY
-
-
-load_dotenv()
+from gqc_agent.core._constants.constants import CURRENT, HISTORY, ROLE, USER, QUERY
 
 
 class AgentPipeline:
@@ -25,35 +20,37 @@ class AgentPipeline:
         api_key (str): API key for the selected LLM provider.
         model (str): Name of the model to use.
     """
-    def __init__(self, api_key: str, model: str):
+    def __init__(self, api_key: str, model: str, provider: str):
         """
         Initialize the AgentPipeline with API key and model name.
 
         Args:
             api_key (str): OpenAI or Gemini API key.
             model (str): Model name to be used with the API key.
+            provider (str): LLM provider, must be either "gpt" or "gemini".
         """
         self.api_key = api_key
         self.model = model
+        self.provider = provider
 
-    @classmethod
-    def get_supported_models(cls, api_key: str):
+    def get_supported_models(self):
         """
         Fetch the list of supported models for the given API key.
 
         Args:
+            provider (str): LLM provider, either "gpt" or "gemini".
             api_key (str): The API key for GPT or Gemini.
 
         Returns:
             list: Supported model names. Returns empty list if error occurs.
         """
         try:
-            if api_key == os.getenv(OPENAI_API_KEY):
-                return list_gpt_models(api_key)
-            elif api_key == os.getenv(GEMINI_API_KEY):
-                return list_gemini_models(api_key)
+            if self.provider.lower() == "gpt":
+                return list_gpt_models(self.api_key)
+            elif self.provider.lower() == "gemini":
+                return list_gemini_models(self.api_key)
             else:
-                raise ValueError("No valid API key provided or unknown model provider")
+                raise ValueError("Provider must be either 'gpt' or 'gemini'")
         except Exception as e:
             print(f"Error fetching supported models: {e}")
             return []
@@ -126,7 +123,7 @@ class AgentPipeline:
         # Step 2: Validate model
         # -----------------------------
         try:
-            validate_model(self.model, self.api_key)
+            validate_model(self.model, self.api_key, self.provider)
             
         except ValueError as ve:
             print(f"Model validation failed: {ve}")
@@ -161,21 +158,21 @@ class AgentPipeline:
         # -----------------------------
         def run_intent():
             try:
-                results["intent_classifier"] = classify_intent(agent_input, self.model, self.api_key)
+                results["intent_classifier"] = classify_intent(agent_input, self.model, self.api_key, self.provider)
             except Exception as e:
                 print(f"Intent classification error: {e}")
                 results["intent_classifier"] = {"intent": None}
             
         def run_rephrase():
             try:
-                results["query_rephraser"] = rephrase_query(agent_input, self.model, self.api_key)
+                results["query_rephraser"] = rephrase_query(agent_input, self.model, self.api_key, self.provider)
             except Exception as e:
                 print(f"Query rephrasing error: {e}")
                 results["query_rephraser"] = {"rephrased_queries": None}
                 
         def run_note():
             try:
-                results["note_creator"] = create_note(note_creator_input, self.model, self.api_key)
+                results["note_creator"] = create_note(note_creator_input, self.model, self.api_key, self.provider)
             except Exception as e:
                 print(f"Note creation error: {e}")
                 results["note_creator"] = {"notes": None}
