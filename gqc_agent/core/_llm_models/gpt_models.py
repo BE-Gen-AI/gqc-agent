@@ -3,8 +3,7 @@ def list_gpt_models(client):
     List all available GPT models for the given API key.
 
     Args:
-        api_key (str, optional): OpenAI API key. If not provided, it will
-                                 be read from the .env file (OPENAI_API_KEY).
+        client: Initialized GPT client object.
 
     Returns:
         list: List of model IDs available in GPT.

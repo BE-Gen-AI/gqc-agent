@@ -5,7 +5,7 @@ def call_gemini(client, model, system_prompt: str, user_prompt: str) -> str:
     Generate a JSON response using a Gemini language model.
 
     Args:
-        api_key (str): API key for Gemini.
+        client: Initialized GEMINI client object.
         model (str): Gemini model name.
         system_prompt (str): System instructions.
         user_prompt (str): User query.

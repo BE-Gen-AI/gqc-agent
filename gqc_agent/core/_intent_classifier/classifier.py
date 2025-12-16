@@ -12,8 +12,8 @@ def classify_intent(user_input: dict, model: str, provider: str, client, system_
     Args:
         user_input (dict): Structured input with 'current' and 'history' queries.
         model (str): Model name supported (GPT or Gemini).
-        api_key (str): API key for the LLM.
-        provider (str): provider name (gpt or gemini).
+        provider (str): LLM provider, either "gpt" or "gemini".
+        client: Initialized LLM client (OpenAI or Gemini client object).
         system_prompt_file (str): Filename of the system prompt.
 
     Returns:

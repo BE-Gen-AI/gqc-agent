@@ -3,8 +3,7 @@ def list_gemini_models(client):
     List all available Gemini models for the given API key.
 
     Args:
-        api_key (str, optional): Gemini API key. If not provided, it will
-                                 be read from the .env file (GEMINI_API_KEY).
+        client: Initialized GEMINI client object.
 
     Returns:
         list: List of model names available in Gemini.
