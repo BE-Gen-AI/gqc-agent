@@ -2,6 +2,7 @@
 
 ![Version](https://img.shields.io/badge/version-v1.0.2-blue)
 ![License](https://img.shields.io/pypi/l/gqc-agent)
+![Agent](https://img.shields.io/badge/Agent-GQC-red)
 
 GQC (General Query Classifier) Agent helps developers work with AI models using an agent-based pipeline. It includes intent classification, query rephrasing, history summarization, and an orchestrator that manages all agents.
 
@@ -84,7 +85,7 @@ from gqc_agent.core.orchestrator import AgentPipeline
 OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
 # GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 
-# client = AgentPipeline(api_key=OPENAI_API_KEY, model="gpt-4o-mini", provider="gemini")
+# client = AgentPipeline(api_key=GEMINI_API_KEY, model="models/gemini-2.5-flash", provider="gemini")
 client = AgentPipeline(api_key=OPENAI_API_KEY, model="gpt-4o-mini", provider="gpt")
 gpt_models = client.get_supported_models()
 # gemini_models = client.get_supported_models()
