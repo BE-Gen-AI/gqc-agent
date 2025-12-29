@@ -8,7 +8,7 @@ Task:
     - What is missing or needs elaboration.
 - Provide context so the next response can be complete and helpful.
 - Always return output in JSON with a single key "notes".
-- Do not include greetings, explanations, or text outside the JSON.
+- Do not include explanations, or text outside the JSON.
 
 Example format:
 {
